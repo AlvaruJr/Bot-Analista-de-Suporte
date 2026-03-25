@@ -2,7 +2,7 @@
 O Especialista Conecta RS é uma solução de Inteligência Artificial baseada em Agentes (IA Generativa) projetada para auxiliar analistas de suporte na ativação de infraestrutura de rede para o projeto Claro/SEDUC. O sistema utiliza a arquitetura MVC (Model-View-Controller) e implementa rigorosas camadas de segurança cibernética (Pentest-Ready).
 
 🚀 Funcionalidades Principais
-🤖 IA Especialista: Processamento de linguagem natural via Google Gemini 2.0 Flash para suporte técnico em ativações.
+🤖 IA Especialista: Processamento de linguagem natural via Google Gemini 2.5 Flash para suporte técnico em ativações.
 
 📧 Sincronização Multicanal: "Colheita" automática de e-mails de ativação de contas Gmail e Outlook (Nexxt Digital).
 
