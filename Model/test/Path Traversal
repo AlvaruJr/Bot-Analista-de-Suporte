@@ -1,0 +1,11 @@
+import os
+import pytest
+def test_context_path_sanitization():
+    """Valida se o caminho do contexto é restrito ao esperado."""
+    path_do_env = os.getenv('CAMINHO_CONTEXTO')
+    
+    # O caminho não deve tentar subir níveis de diretório sensíveis
+    forbidden_sequences = ["../", "..\\", "C:/Windows", "/etc/"]
+    
+    for seq in forbidden_sequences:
+        assert seq not in path_do_env, f"Caminho de contexto inseguro detectado: {path_do_env}"
