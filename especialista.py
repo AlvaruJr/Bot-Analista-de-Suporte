@@ -7,6 +7,8 @@ class BotConectaRS:
         self.client = genai.Client(api_key=api_key)
         self.caminho_contexto = caminho_contexto
         self.contexto_texto = self._carregar_contexto()
+        # Inicializa o contador de perguntas
+        self.contador_perguntas = 0 
 
     def _carregar_contexto(self):
         try:
@@ -18,32 +20,46 @@ class BotConectaRS:
             return f"Erro ao carregar log: {e}"
 
     def responder(self, mensagem_usuario, imagem=None):
+        # Verifica se o limite de 3 perguntas foi atingido
+        if self.contador_perguntas >= 3:
+            return "Limite de 3 perguntas atingido para esta sessão. Atendimento encerrado pelo sistema."
+
+        # Incrementa o contador a cada chamada
+        self.contador_perguntas += 1
+
         instrucao = f"""
         Você é o Especialista de Ativação do Projeto Conecta RS.
         Analista responsável: AlvaruJr.
+        Pergunta atual: {self.contador_perguntas} de 3.
         Base de dados: {self.contexto_texto}
 
         REGRAS:
         1. Imagens: Extraia MAC;Serial;Nome.
         2. Regra 55AXE: Nomear como 'AP Outdoor XX'.
-        3. Texto puro, sem asteriscos ou negrito.
-        4 ."mac": "70:49:A2:06:52:A1",
-      "sn": "S242L26003598",
-      "name": "Switch"
+        3. Texto puro, sem asteriscos ou negrito (Markdown desativado).
+        4. Exemplo de saída: mac: 70:49:A2:06:52:A1, sn: S242L26003598, name: Switch.
+        5. Se esta for a pergunta 3, finalize a resposta com um resumo de encerramento.
         """
         
         conteudo = [mensagem_usuario]
         if imagem:
             conteudo.append(imagem)
 
-        config = types.GenerateContentConfig(system_instruction=instrucao, temperature=0)
+        config = types.GenerateContentConfig(
+            system_instruction=instrucao, 
+            temperature=0
+        )
 
         try:
             response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-flash', # Atualizado para versão estável
                 contents=conteudo,
                 config=config
             )
             return response.text
         except Exception as e:
             return f"Erro: {e}"
+
+    def resetar_sessao(self):
+        """Método para reiniciar o contador se necessário."""
+        self.contador_perguntas = 0
